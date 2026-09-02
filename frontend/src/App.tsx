@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from './api'
-import type { Application, ApplicationStatus, Job } from './types'
+import Onboarding from './Onboarding'
+import type { Application, ApplicationStatus, Job, Profile } from './types'
 import './App.css'
 
 const pipeline: { status: ApplicationStatus; label: string }[] = [
@@ -12,6 +13,7 @@ const pipeline: { status: ApplicationStatus; label: string }[] = [
 ]
 
 function App() {
+  const [profile, setProfile] = useState<Profile | null | undefined>(undefined)
   const [jobs, setJobs] = useState<Job[]>([])
   const [applications, setApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
@@ -24,6 +26,7 @@ function App() {
   )
 
   async function loadDashboard() {
+    setLoading(true)
     try {
       setError(null)
       const [nextJobs, nextApplications] = await Promise.all([
@@ -40,14 +43,30 @@ function App() {
   }
 
   useEffect(() => {
-    Promise.all([api.getJobs(), api.getApplications()])
-      .then(([nextJobs, nextApplications]) => {
-        setJobs(nextJobs)
-        setApplications(nextApplications)
+    api.getProfile()
+      .then(async (nextProfile) => {
+        setProfile(nextProfile)
+        if (nextProfile?.resumeParsed) {
+          const [nextJobs, nextApplications] = await Promise.all([
+            api.getJobs(),
+            api.getApplications(),
+          ])
+          setJobs(nextJobs)
+          setApplications(nextApplications)
+        }
       })
-      .catch((requestError: unknown) => setError(messageFrom(requestError)))
+      .catch((requestError: unknown) => {
+        setError(messageFrom(requestError))
+        setProfile(null)
+      })
       .finally(() => setLoading(false))
   }, [])
+
+  function finishOnboarding(savedProfile: Profile) {
+    setError(null)
+    setProfile(savedProfile)
+    void loadDashboard()
+  }
 
   async function refreshJobs() {
     setRefreshing(true)
@@ -88,12 +107,26 @@ function App() {
   const activeCount = applications.filter((application) => application.status !== 'rejected').length
   const interviewCount = applications.filter((application) => application.status === 'interview').length
 
+  if (profile === undefined) {
+    return <div className="startup-screen"><span className="brand-mark">B</span><p>Opening Beacon…</p></div>
+  }
+
+  if (!profile || !profile.resumeParsed) {
+    return (
+      <Onboarding
+        initialProfile={profile}
+        connectionError={error}
+        onComplete={finishOnboarding}
+      />
+    )
+  }
+
   return (
     <div className="shell">
       <header className="topbar">
-        <a className="brand" href="#top" aria-label="Job Copilot home">
-          <span className="brand-mark">JC</span>
-          <span>Job Copilot</span>
+        <a className="brand" href="#top" aria-label="Beacon home">
+          <span className="brand-mark">B</span>
+          <span>Beacon</span>
         </a>
         <nav aria-label="Dashboard sections">
           <a href="#jobs">Job feed</a>
@@ -199,7 +232,7 @@ function App() {
       </main>
 
       <footer>
-        <span>Job Copilot</span>
+        <span>Beacon</span>
         <span>Built for a focused, human-led job search.</span>
       </footer>
     </div>

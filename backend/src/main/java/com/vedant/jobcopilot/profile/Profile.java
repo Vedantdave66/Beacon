@@ -49,6 +49,37 @@ public class Profile {
     protected Profile() {
     }
 
+    public Profile(
+            String name,
+            String email,
+            String[] targetRoles,
+            String[] locations,
+            String remotePreference,
+            BigDecimal salaryMin,
+            BigDecimal salaryMax,
+            String seniority) {
+        update(name, email, targetRoles, locations, remotePreference, salaryMin, salaryMax, seniority);
+    }
+
+    public void update(
+            String name,
+            String email,
+            String[] targetRoles,
+            String[] locations,
+            String remotePreference,
+            BigDecimal salaryMin,
+            BigDecimal salaryMax,
+            String seniority) {
+        this.name = name;
+        this.email = email;
+        this.targetRoles = targetRoles;
+        this.locations = locations;
+        this.remotePreference = remotePreference;
+        this.salaryMin = salaryMin;
+        this.salaryMax = salaryMax;
+        this.seniority = seniority;
+    }
+
     public UUID getId() {
         return id;
     }

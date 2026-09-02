@@ -22,7 +22,7 @@ public class RemoteOkClient implements JobFeedClient {
     public RemoteOkClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
                 .baseUrl("https://remoteok.com")
-                .defaultHeader(HttpHeaders.USER_AGENT, "PersonalJobCopilot/1.0")
+                .defaultHeader(HttpHeaders.USER_AGENT, "Beacon/1.0")
                 .build();
     }
 

@@ -5,3 +5,4 @@ graphify-out/cost.json
 frontend/node_modules/
 frontend/dist/
 backend/target/
+graphify-out/

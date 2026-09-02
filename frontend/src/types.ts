@@ -21,3 +21,27 @@ export type Application = {
   resumeVersion: string | null
   job: Job
 }
+
+export type Profile = {
+  id: string
+  name: string
+  email: string
+  targetRoles: string[]
+  locations: string[]
+  remotePreference: string
+  salaryMin: number | null
+  salaryMax: number | null
+  seniority: string
+  resumeParsed: boolean
+}
+
+export type ProfileInput = Omit<Profile, 'id' | 'resumeParsed'>
+
+export type ParsedResume = {
+  id: string
+  skills: string[]
+  yearsExperience: number | null
+  techStack: string[]
+  pastTitles: string[]
+  updatedAt: string
+}

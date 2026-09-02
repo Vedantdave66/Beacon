@@ -1,8 +1,8 @@
 spring:
   application:
-    name: job-copilot
+    name: beacon
   datasource:
-    url: ${SUPABASE_DB_URL:jdbc:postgresql://localhost:5432/jobcopilot}
+    url: ${SUPABASE_DB_URL:jdbc:postgresql://aws-0-ca-central-1.pooler.supabase.com:5432/postgres}
     username: ${SUPABASE_DB_USERNAME:postgres}
     password: ${SUPABASE_DB_PASSWORD:postgres}
     hikari:
@@ -13,6 +13,22 @@ spring:
     open-in-view: false
   flyway:
     enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  ai:
+    openai:
+      api-key: ${GROQ_API_KEY}
+      base-url: https://api.groq.com/openai/v1
+      max-retries: 0
+      chat:
+        model: ${GROQ_MODEL:openai/gpt-oss-120b}
+        temperature: 0.1
+    retry:
+      max-attempts: 1
 
 job-feed:
   schedule: ${JOB_FEED_SCHEDULE:0 0 6 * * *}

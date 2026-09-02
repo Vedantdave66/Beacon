@@ -21,4 +21,4 @@
 html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; min-height: 100vh; }
 button, input, select { font: inherit; }
-button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid rgba(200, 92, 50, .35); outline-offset: 3px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid rgba(200, 92, 50, .35); outline-offset: 3px; }
